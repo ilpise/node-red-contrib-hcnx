@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const moment = require('moment');
 const HcnxServer = require('../lib/platforms/hcnx');
-const { UniversalPlatform: UniversalServer, ContextProviders, ChatExpress } = require('chat-platform');
+const { ContextProviders, ChatExpress } = require('chat-platform');
 const utils = require('node-red-contrib-chatbot/lib/helpers/utils');
 const clc = require('cli-color');
 const lcd = require('node-red-contrib-chatbot/lib/helpers/lcd');
@@ -135,6 +135,8 @@ module.exports = function(RED) {
             contextProvider: node.contextProvider,
             logfile: botConfiguration.logfile,
             debug: botConfiguration.debug,
+            webHook: botConfiguration.webHook,
+            // TODO add authId && authPassword
             RED: RED
           },
           botConfiguration.connectorParams
@@ -184,12 +186,15 @@ module.exports = function(RED) {
   }
   registerType('chatbot-hcnx-node', HcnxBotNode, {
     credentials: {
-      // token: {
-      //   type: 'text'
-      // }
+      token: {
+        type: 'text'
+      }
     }
   });
 
+  /*
+  / chatbot-hcnx-send
+  */
   function HcnxInNode(config) {
 
     RED.nodes.createNode(this, config);
@@ -257,6 +262,9 @@ module.exports = function(RED) {
   }
   registerType('chatbot-hcnx-receive', HcnxInNode);
 
+  /*
+  * chatbot-hcnx-receive
+  */
   function HcnxOutNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
@@ -324,6 +332,19 @@ module.exports = function(RED) {
       });
     });
   }
-  registerType('chatbot-hcnx-send', HcnxOutNode);
+  registerType('chatbot-hcnx-send', HcnxOutNode, {
+    credentials: {
+      url: {
+        value: '',
+        required: false
+      },
+      accountId: {
+        value: '',
+      },
+      accountPassword: {
+        value: '',
+      }
+    },
+  });
 
 };
