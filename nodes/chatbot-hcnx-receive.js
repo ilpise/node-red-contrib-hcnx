@@ -34,10 +34,9 @@ module.exports = function(RED) {
   function HcnxBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
-    console.log('BOT node');
-    console.log(node);
-    console.log(config);
-    console.log('END BOT node');
+    // console.log('BOT node');
+    // console.log(node);
+    // console.log('END BOT node');
 
     globalContextHelper.init(this.context().global);
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
@@ -313,7 +312,7 @@ module.exports = function(RED) {
     console.log('END OUT node');
 
     this.credentials = this.credentials || {}
-    
+
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
       node.chat = this.config.chat;
