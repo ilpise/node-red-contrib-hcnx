@@ -1,5 +1,6 @@
 
-<!-- RedBot Node -->
+<!-- RedBot Node Configuration node -->
+<!-- https://nodered.org/docs/creating-nodes/config-nodes -->
 <script type="text/javascript">
   $.RedBot.registerType('chatbot-hcnx-node', {
     category: 'config',
@@ -11,16 +12,6 @@
       usernames: {
         value: '',
         required: false
-      },
-      url: {
-        value: '',
-        required: false
-      },
-      accountId: {
-        value: '',
-      },
-      accountPassword: {
-        value: '',
       },
       connectorParams: {
         value: ''
@@ -39,9 +30,6 @@
     },
     oneditsave: function() {
       this.connectorParams = $('#node-config-input-connectorParams').typedInput('value');
-      this.url = $('#node-config-input-url').typedInput('value');
-      this.accountId = $('#node-config-input-accountId').typedInput('value');
-      this.accountPassword = $('#node-config-input-accountPassword').typedInput('value');
     },
     oneditprepare: function() {
       $("#node-config-input-polling").spinner({min: 0, step: 100});
@@ -67,23 +55,6 @@
         });
     },
     paletteName: 'Hcnx Bot',
-    credentials: {
-      token: {
-        type: 'text'
-      }
-    },
-    // credentials: {
-    //   url: {
-    //     value: '',
-    //     required: false
-    //   },
-    //   accountId: {
-    //     value: '',
-    //   },
-    //   accountPassword: {
-    //     value: '',
-    //   }
-    // },
     label: function () {
       return this.botname;
     }
@@ -96,24 +67,6 @@
     <input type="text" id="node-config-input-botname">
   </div>
   <div class="form-editable">
-    <div class="form-row">
-      <label for="node-config-input-url"><i class="fa fa-globe"></i> URL</label>
-      <input type="text" id="nodeconfig-input-url" placeholder="https://">
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-accountId">Account Id</label>
-      <input type="text" id="node-config-input-accountId">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        Account Id
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="node-config-input-accountPassword">Password</label>
-      <input type="text" id="node-config-input-accountPassword">
-      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-        The password related to the Account Id
-      </div>
-    </div>
     <div class="form-row">
       <label for="node-config-input-usernames">Users</label>
       <input type="text" id="node-config-input-usernames">
@@ -161,6 +114,7 @@
 <script type="text/x-red" data-help-name="chatbot-hcnx-node">
   test
 </script>
+<!-- End for Configuration node - HcnxBot -->
 
 <!-- RedBot Platforms Node Receviver - Hcnx In -->
 <script type="text/javascript">
@@ -206,7 +160,7 @@
 <script type="text/x-red" data-help-name="chatbot-hcnx-receive"><p>The <code>Universal Connector node</code>
 </script>
 
-<!-- RedBot Platforms Node Receviver - Hcnx Out -->
+<!-- RedBot Platforms Node Receviver Sender - Hcnx Out -->
 
 <script type="text/javascript">
   $.RedBot.registerType('chatbot-hcnx-send', {
@@ -236,6 +190,32 @@
     paletteLabel: 'Hcnx Out',
     label: function () {
       return 'Hcnx Sender';
+    },
+    // oneditsave: function() {
+    //   this.credentials.url = $('#node-input-url').typedInput('value');
+    //   this.credentials.accountId = $('#node-input-accountId').typedInput('value');
+    //   this.credentials.accountPassword = $('#node-input-accountPassword').typedInput('value');
+    // },
+    // oneditprepare: function() {
+    //   // $('#node-input-user').val('');
+    //   // $('#node-input-password').val('');
+    // // this.credentials.username is set to the appropriate value
+    // // this.credentials.password is not set
+    // // this.credentials.has_password indicates if the property is present in the runtime
+    // },
+    credentials: {
+      url: {
+        value: '',
+        required: false
+      },
+      accountId: {
+        value: '',
+        required: false
+      },
+      accountPassword: {
+        value: '',
+        required: false
+      }
     }
   });
 </script>
@@ -252,13 +232,31 @@
   <div class="redbot-form-hint">
     Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
   </div>
+  <div class="form-row">
+    <label for="node-input-url"><i class="fa fa-globe"></i> URL</label>
+    <input type="text" id="node-input-url" placeholder="https://">
+  </div>
+  <div class="form-row">
+    <label for="node-input-accountId">Account Id</label>
+    <input type="text" id="node-input-accountId">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      Account Id
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-accountPassword">Password</label>
+    <input type="text" id="node-input-accountPassword">
+    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+      The password related to the Account Id
+    </div>
+  </div>
   <div class="form-row" style="margin-top:25px;">
     <label for="node-input-track" style="margin-bottom:0px;">Track</label>
     <input type="checkbox" value="true" id="node-input-track" style="margin-top:0px;">
     <div class="redbot-form-hint">
     Track response of the user for this message: any further answer will be redirect to the output pin.
     </div>
-    <label for="node-input-track" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
+    <label for="node-input-passThrough" style="margin-bottom:0px;margin-top:15px;">Pass Through</label>
     <input type="checkbox" value="true" id="node-input-passThrough" style="margin-top:0px;">
     <div class="redbot-form-hint">
     Forward the message to the output pin after sending (useful to chain messages and keep the right order)

@@ -30,23 +30,33 @@ module.exports = function(RED) {
 
   var contextProviders = ContextProviders(RED);
 
+  // Configuration Node
   function HcnxBotNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
+    console.log('BOT node');
+    console.log(node);
+    console.log(config);
+    console.log('END BOT node');
+
     globalContextHelper.init(this.context().global);
     var environment = this.context().global.environment === 'production' ? 'production' : 'development';
     var isUsed = utils.isUsed(RED, node.id);
     var startNode = utils.isUsedInEnvironment(RED, node.id, environment);
     var hcnxConfigs = globalContextHelper.get('hcnx') || {};
 
+    // See node-red-contrib-chatbot/lib/sender-factory.js - line 42
     this.botname = n.botname;
     this.store = n.store;
     this.log = n.log;
-    this.connectorParams = n.connectorParams;
+    this.connectorParams = n.connectorParams; // TODO remove
     this.usernames = n.usernames != null ? n.usernames.split(',') : [];
-    this.polling = n.polling;
-    this.providerToken = n.providerToken;
+    this.polling = n.polling; // TODO remove
+    this.providerToken = n.providerToken; // TODO remove
     this.debug = n.debug;
+    // this.webHook = n.webHook;
+    // this.accountId = n.accountId;
+    // this.accountPassword = n.accountPassword;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -63,20 +73,21 @@ module.exports = function(RED) {
     // get the context storage node
     var contextStorageNode = RED.nodes.getNode(this.store);
     // parse JSON config
-    var connectorParams = null;
-    if (!_.isEmpty(this.connectorParams))
-    {
-      try {
-        connectorParams = JSON.parse(this.connectorParams);
-      } catch (error) {
-        lcd.dump(error, 'Error in JSON configuration of Hcnx Connector');
-        // eslint-disable-next-line no-console
-        console.log(lcd.red(this.connectorParams));
-        // eslint-disable-next-line no-console
-        console.log('');
-        return;
+    // TODO remove
+      var connectorParams = null;
+      if (!_.isEmpty(this.connectorParams))
+      {
+        try {
+          connectorParams = JSON.parse(this.connectorParams);
+        } catch (error) {
+          lcd.dump(error, 'Error in JSON configuration of Hcnx Connector');
+          // eslint-disable-next-line no-console
+          console.log(lcd.red(this.connectorParams));
+          // eslint-disable-next-line no-console
+          console.log('');
+          return;
+        }
       }
-    }
     // build the configuration object
     var botConfiguration = {
       authorizedUsernames: node.usernames,
@@ -84,7 +95,10 @@ module.exports = function(RED) {
       contextProvider: contextStorageNode != null ? contextStorageNode.contextStorage : null,
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug,
-      connectorParams: connectorParams
+      connectorParams: connectorParams,
+      // webHook: this.webHook,
+      // accountId: this.accountId,
+      // accountPassword: this.accountPassword
     };
     // check if there's a valid configuration in global settings
     if (hcnxConfigs[node.botname] != null) {
@@ -127,6 +141,7 @@ module.exports = function(RED) {
         { ...botConfiguration.contextParams, id: this.store }
       );
       // try to start the servers
+      // See chatbot-telegram-receive.js line 14 for example
       try {
         node.contextProvider.start();
         node.chat = HcnxServer.createServer(_.extend(
@@ -135,8 +150,10 @@ module.exports = function(RED) {
             contextProvider: node.contextProvider,
             logfile: botConfiguration.logfile,
             debug: botConfiguration.debug,
-            webHook: botConfiguration.webHook,
-            // TODO add authId && authPassword
+            // webHook: botConfiguration.webHook,
+            // TODO add accountId && accountPassword
+            // accountId: botConfiguration.accountId,
+            // accountPassword: botConfiguration.accountPassword,
             RED: RED
           },
           botConfiguration.connectorParams
@@ -185,15 +202,18 @@ module.exports = function(RED) {
     });
   }
   registerType('chatbot-hcnx-node', HcnxBotNode, {
+    // Set empty credentials /nodes/chatbot-alexa-receive.js
     credentials: {
-      token: {
-        type: 'text'
-      }
+      // token: {
+      //   type: 'text'
+      // }
     }
   });
+  // END OFR Configuration Node
 
   /*
-  / chatbot-hcnx-send
+  / chatbot-hcnx-receive
+  / See sender-factory.js line 164 - GenericInNode
   */
   function HcnxInNode(config) {
 
@@ -240,10 +260,10 @@ module.exports = function(RED) {
             });
         });
       } else {
-        node.warn('Missing or incomplete configuration in Telegram Receiver');
+        node.warn('Missing or incomplete configuration in Hcnx Receiver');
       }
     } else {
-      node.warn('Missing configuration in Telegram Receiver');
+      node.warn('Missing configuration in Hcnx Receiver');
     }
 
     this.on('close', function (done) {
@@ -263,10 +283,13 @@ module.exports = function(RED) {
   registerType('chatbot-hcnx-receive', HcnxInNode);
 
   /*
-  * chatbot-hcnx-receive
+  * chatbot-hcnx-send
+  * See sender-factory.js line 234 - GenericOutNode
+  * See https://nodered.org/docs/creating-nodes/credentials
   */
   function HcnxOutNode(config) {
     RED.nodes.createNode(this, config);
+
     var node = this;
     globalContextHelper.init(this.context().global);
     var global = this.context().global;
@@ -274,10 +297,23 @@ module.exports = function(RED) {
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;
+    // Accessing credentials
+    //   Runtime use of credentials
+    //   Within the runtime, a node can access its credentials using the credentials property:
+    // this.credentials.url = config.url;
+    // this.credentials.accountId = config.accountId;
+    // this.credentials.accountPassword = config.accountPassword;
     this.track = config.track;
     this.passThrough = config.passThrough;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
+    console.log('OUT node');
+    console.log(this);
+    console.log(config);
+    console.log('END OUT node');
+
+    this.credentials = this.credentials || {}
+    
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
       node.chat = this.config.chat;
@@ -332,19 +368,18 @@ module.exports = function(RED) {
       });
     });
   }
-  registerType('chatbot-hcnx-send', HcnxOutNode, {
+  registerType('chatbot-hcnx-send', HcnxOutNode,{
     credentials: {
       url: {
-        value: '',
-        required: false
+        type: 'text'
       },
       accountId: {
-        value: '',
+        type: 'text'
       },
       accountPassword: {
-        value: '',
+        type: 'text'
       }
-    },
+    }
   });
 
 };
