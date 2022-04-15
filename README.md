@@ -6,6 +6,11 @@ git clone https://github.com/node-red/node-red.git
 ```
 This will create a directory called `node-red` in the current directory that contains the full source code of the project. The rest of these instructions assume you are inside that directory.
 
+Build the project
+```
+npm run-script build
+```
+
 Once you are on main branch, you should install all of the dependencies with the command:
 ```
 npm install
