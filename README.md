@@ -21,6 +21,17 @@ You can then run Node-RED using the command:
 npm start
 ```
 
+## node-red-contrib-chatbot
+
+Install node-red-contrib-chatbot
+
+[node-red-contrib-chatbot](https://flows.nodered.org/node/node-red-contrib-chatbot)
+
+```
+$ cd ~/.node-red
+$ npm install node-red-contrib-chatbot
+```
+
 ## node-red-contrib-hcnx
 ```
 git clone https://github.com/ilpise/node-red-contrib-hcnx.git
