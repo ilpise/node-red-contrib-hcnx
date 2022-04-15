@@ -53,7 +53,7 @@ module.exports = function(RED) {
     this.polling = n.polling; // TODO remove
     this.providerToken = n.providerToken; // TODO remove
     this.debug = n.debug;
-    // this.webHook = n.webHook;
+    this.webHook = n.webHook;
     this.url = n.url;
     this.accountId = n.accountId;
     this.accountPassword = n.accountPassword;
@@ -96,7 +96,7 @@ module.exports = function(RED) {
       contextParams: contextStorageNode != null ? contextStorageNode.contextParams : null,
       debug: node.debug,
       connectorParams: connectorParams,
-      // webHook: this.webHook,
+      webHook: node.webHook,
       url: node.credentials.url,
       accountId: node.credentials.accountId,
       accountPassword: node.credentials.accountPassword
@@ -151,8 +151,7 @@ module.exports = function(RED) {
             contextProvider: node.contextProvider,
             logfile: botConfiguration.logfile,
             debug: botConfiguration.debug,
-            // webHook: botConfiguration.webHook,
-            // TODO add accountId && accountPassword
+            webHook: botConfiguration.webHook,
             url: botConfiguration.url,
             accountId: botConfiguration.accountId,
             accountPassword: botConfiguration.accountPassword,
@@ -223,13 +222,18 @@ module.exports = function(RED) {
   / See sender-factory.js line 164 - GenericInNode
   */
   function HcnxInNode(config) {
-
     RED.nodes.createNode(this, config);
     var node = this;
     globalContextHelper.init(this.context().global);
     var global = this.context().global;
     var environment = global.environment === 'production' ? 'production' : 'development';
     var nodeGlobalKey = null;
+
+    // console.log('IN node');
+    // console.log(this);
+    // console.log(config);
+    // console.log('END IN node');
+
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;
@@ -309,10 +313,10 @@ module.exports = function(RED) {
     this.passThrough = config.passThrough;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
 
-    console.log('OUT node');
-    console.log(this);
-    console.log(config);
-    console.log('END OUT node');
+    // console.log('OUT node');
+    // console.log(this);
+    // console.log(config);
+    // console.log('END OUT node');
 
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});

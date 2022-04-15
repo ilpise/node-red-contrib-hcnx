@@ -26,7 +26,13 @@
       },
       debug: {
         value: false
-      }
+      },
+      webHook: {
+        value: '',
+        validate: function(value) {
+          return $.RedBot.validate.url(value);
+        }
+      },
     },
     oneditsave: function() {
       this.connectorParams = $('#node-config-input-connectorParams').typedInput('value');
@@ -79,6 +85,16 @@
   <div class="form-row">
     <label for="node-config-input-botname"><i class="icon-bookmark"></i> Bot Name</label>
     <input type="text" id="node-config-input-botname">
+  </div>
+  <div class="form-row form-row-mode form-row-mode-webHook">
+    <label for="node-config-input-webHook">Web Hook</label>
+    <input type="text" id="node-config-input-webHook">
+    <div class="redbot-form-hint">
+      Needs to be a public and secure internet address, accessible outside the local network and must hit your instance at the
+      address <code>https://your.instance.com/redbot/hcnx</code>.
+      Use <b>ngrok</b> to create a bridge to your local environment while in development mode, for example something
+      like  <code>https://123456.ngrok.io/redbot/hcnx</code>
+    </div>
   </div>
   <div class="form-editable">
     <div class="form-row">
@@ -218,7 +234,7 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'chatbot-sender.png',
+    icon: 'hcnx.png',
     paletteLabel: 'Hcnx Out',
     label: function () {
       return 'Hcnx Sender';
