@@ -57,6 +57,20 @@
     paletteName: 'Hcnx Bot',
     label: function () {
       return this.botname;
+    },
+    credentials: {
+      url: {
+        value: '',
+        required: false
+      },
+      accountId: {
+        value: '',
+        required: false
+      },
+      accountPassword: {
+        value: '',
+        required: false
+      }
     }
   });
 </script>
@@ -72,6 +86,24 @@
       <input type="text" id="node-config-input-usernames">
       <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
         Comma separated list of userId authorized to use the chatBot
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-url"><i class="fa fa-globe"></i> URL</label>
+      <input type="text" id="node-config-input-url" placeholder="https://">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-accountId">Account Id</label>
+      <input type="text" id="node-config-input-accountId">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        Account Id
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-accountPassword">Password</label>
+      <input type="text" id="node-config-input-accountPassword">
+      <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
+        The password related to the Account Id
       </div>
     </div>
     <div class="form-row">
@@ -190,32 +222,6 @@
     paletteLabel: 'Hcnx Out',
     label: function () {
       return 'Hcnx Sender';
-    },
-    // oneditsave: function() {
-    //   this.credentials.url = $('#node-input-url').typedInput('value');
-    //   this.credentials.accountId = $('#node-input-accountId').typedInput('value');
-    //   this.credentials.accountPassword = $('#node-input-accountPassword').typedInput('value');
-    // },
-    // oneditprepare: function() {
-    //   // $('#node-input-user').val('');
-    //   // $('#node-input-password').val('');
-    // // this.credentials.username is set to the appropriate value
-    // // this.credentials.password is not set
-    // // this.credentials.has_password indicates if the property is present in the runtime
-    // },
-    credentials: {
-      url: {
-        value: '',
-        required: false
-      },
-      accountId: {
-        value: '',
-        required: false
-      },
-      accountPassword: {
-        value: '',
-        required: false
-      }
     }
   });
 </script>
@@ -231,24 +237,6 @@
   </div>
   <div class="redbot-form-hint">
     Bot for <strong>production</strong> will be launched only if the global variable <em>"environment"</em> in <em>settings.js</em> is set to <em>"production"</em>, otherwise will be used the configuration for <strong>development</strong>.
-  </div>
-  <div class="form-row">
-    <label for="node-input-url"><i class="fa fa-globe"></i> URL</label>
-    <input type="text" id="node-input-url" placeholder="https://">
-  </div>
-  <div class="form-row">
-    <label for="node-input-accountId">Account Id</label>
-    <input type="text" id="node-input-accountId">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      Account Id
-    </div>
-  </div>
-  <div class="form-row">
-    <label for="node-input-accountPassword">Password</label>
-    <input type="text" id="node-input-accountPassword">
-    <div style="max-width: 460px;font-size: 12px;color: #999999;line-height: 14px;margin-top:5px;">
-      The password related to the Account Id
-    </div>
   </div>
   <div class="form-row" style="margin-top:25px;">
     <label for="node-input-track" style="margin-bottom:0px;">Track</label>

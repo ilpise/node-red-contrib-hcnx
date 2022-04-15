@@ -54,8 +54,9 @@ module.exports = function(RED) {
     this.providerToken = n.providerToken; // TODO remove
     this.debug = n.debug;
     // this.webHook = n.webHook;
-    // this.accountId = n.accountId;
-    // this.accountPassword = n.accountPassword;
+    this.url = n.url;
+    this.accountId = n.accountId;
+    this.accountPassword = n.accountPassword;
 
     if (!isUsed) {
       // silently exit, this node is not used
@@ -96,8 +97,9 @@ module.exports = function(RED) {
       debug: node.debug,
       connectorParams: connectorParams,
       // webHook: this.webHook,
-      // accountId: this.accountId,
-      // accountPassword: this.accountPassword
+      url: node.credentials.url,
+      accountId: node.credentials.accountId,
+      accountPassword: node.credentials.accountPassword
     };
     // check if there's a valid configuration in global settings
     if (hcnxConfigs[node.botname] != null) {
@@ -151,8 +153,9 @@ module.exports = function(RED) {
             debug: botConfiguration.debug,
             // webHook: botConfiguration.webHook,
             // TODO add accountId && accountPassword
-            // accountId: botConfiguration.accountId,
-            // accountPassword: botConfiguration.accountPassword,
+            url: botConfiguration.url,
+            accountId: botConfiguration.accountId,
+            accountPassword: botConfiguration.accountPassword,
             RED: RED
           },
           botConfiguration.connectorParams
@@ -201,14 +204,19 @@ module.exports = function(RED) {
     });
   }
   registerType('chatbot-hcnx-node', HcnxBotNode, {
-    // Set empty credentials /nodes/chatbot-alexa-receive.js
     credentials: {
-      // token: {
-      //   type: 'text'
-      // }
+      url: {
+        type: 'text'
+      },
+      accountId: {
+        type: 'text'
+      },
+      accountPassword: {
+        type: 'text'
+      }
     }
   });
-  // END OFR Configuration Node
+  // END OF Configuration Node
 
   /*
   / chatbot-hcnx-receive
@@ -285,6 +293,7 @@ module.exports = function(RED) {
   * chatbot-hcnx-send
   * See sender-factory.js line 234 - GenericOutNode
   * See https://nodered.org/docs/creating-nodes/credentials
+  * the config element passed to this function/node is the  HcnxBotNode node see Debug dell'out node in readme
   */
   function HcnxOutNode(config) {
     RED.nodes.createNode(this, config);
@@ -296,12 +305,6 @@ module.exports = function(RED) {
 
     this.bot = config.bot;
     this.botProduction = config.botProduction;
-    // Accessing credentials
-    //   Runtime use of credentials
-    //   Within the runtime, a node can access its credentials using the credentials property:
-    // this.credentials.url = config.url;
-    // this.credentials.accountId = config.accountId;
-    // this.credentials.accountPassword = config.accountPassword;
     this.track = config.track;
     this.passThrough = config.passThrough;
     this.config = RED.nodes.getNode(environment === 'production' ? this.botProduction : this.bot);
@@ -310,8 +313,6 @@ module.exports = function(RED) {
     console.log(this);
     console.log(config);
     console.log('END OUT node');
-
-    this.credentials = this.credentials || {}
 
     if (this.config) {
       this.status({fill: 'red', shape: 'ring', text: 'disconnected'});
@@ -367,18 +368,6 @@ module.exports = function(RED) {
       });
     });
   }
-  registerType('chatbot-hcnx-send', HcnxOutNode,{
-    credentials: {
-      url: {
-        type: 'text'
-      },
-      accountId: {
-        type: 'text'
-      },
-      accountPassword: {
-        type: 'text'
-      }
-    }
-  });
+  registerType('chatbot-hcnx-send', HcnxOutNode);
 
 };
