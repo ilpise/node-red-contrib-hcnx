@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "description": "",
   "dependencies": {
+    "mysql2": "^2.3.3",
     "node-red-contrib-chatbot": "^0.19.16"
   },
-  "node-red" : {
-        "nodes": {
-            "chatbot-hcnx-receive": "./nodes/chatbot-hcnx-receive.js"
-        }
+  "node-red": {
+    "nodes": {
+      "chatbot-hcnx-receive": "./nodes/chatbot-hcnx-receive.js"
+    }
   },
   "author": "Simone Corti <pisewip@gmail.com>",
   "license": "ISC"
